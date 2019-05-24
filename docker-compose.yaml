@@ -17,6 +17,7 @@ services:
     - ./flask_app:/code # share code directory
     links:
     - app_db
+    - redis_db
     command: flask run -h0.0.0.0 -p5000 --reload
 
   app_db:
