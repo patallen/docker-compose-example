@@ -1,30 +1,51 @@
-version: "3.7" # required by docker-compose
+version: "3.7" # version is required by docker-compose
 
+# define the services (containers)
 services:
   flask_app:
+    # container_name: sets the display name in logs & acts as hostname
     container_name: "flask-app"
+
+    # Describe the build environment
     build:
+      # Sets the base dir where build will be run from
       context: .
+      # Specify an alternate Dockerfile, if not "Dockerfile"
       dockerfile: docker/app.dockerfile
+
+    # Set environment variables for container
     environment:
-    - REDIS_USER=
+    - FLASK_ENV=development
+    - REDIS_HOST=redis-db
     - DB_USER=postgres
     - DB_NAME=postgres
     - DB_PASSWORD=postgres
+
+    # Port mappings from host to container
     ports:
-    - 5000:5000 # forward local 5000 to container 5000
+    - 5000:5000 
+
+    # Share the 'flask_app' directory to container as '/code'
     volumes:
-    - ./flask_app:/code # share code directory
+    - ./flask_app:/code
+
+    # Flask app depends on app_db and redis_db
+    # post-colon text defines an alias and acts as a hostname to container
     links:
-    - app_db
-    - redis_db
+    - app_db:app-db
+    - redis_db:redis-db
+
+    # command to be run on `docker-compose up`. Overrides Dockerfile CMD
     command: flask run -h0.0.0.0 -p5000 --reload
 
   app_db:
-    container_name: "app-db" # allows us to use "app-db" as host
-    image: postgres:11 # base this container off raw postgress image
-    ports:
-    - 5432:5432
+    container_name: "app-db"
+
+    # Base this container off raw postgres image
+    # No 'build' section needed here
+    image: postgres:11 
+
+    # Connect the volume created under :volumes: to postgres data directory
     volumes:
     - db_volume:/var/lib/postgresql
 

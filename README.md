@@ -24,4 +24,10 @@ To migrate db:
 
 
 To upgrade db:
+
 - `docker-compose run cargo flask_app flask db upgrade`
+
+
+To attach to running instance:
+
+- `docker-compose exec <container> /bin/bash`
