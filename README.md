@@ -1,33 +1,56 @@
-To build containers:
+### Example docker-compose setup with flask/postgres/redis
 
-- `docker-compose build`
+#### Setup
+1. `cd` into directory containing `docker-compose.yaml`
+2. `docker-compose build`
+3. `docker-compose run --rm flask_app flask db upgrade`
+4. `docker-compose up`
 
+#### Example App Usage
 
-To start (will build if not yet built):
+List Events:
+```
+curl localhost:5000/events
+```
 
-- `docker-compose up`
+Add Event: 
+```
+curl -d '{"price":10.99, "date":"06-10-2019", "name": "Kelp, The Musical"}' -H "Content-Type: application/json" -X POST localhost:5000/events
+```
 
+#### Common Commands
 
-To stop:
+Build containers:
+```
+docker-compose build
+```
 
-- `docker-compose stop`
+Start Containers (will build if not yet built):
+```
+docker-compose up
+```
 
+Stop Containers:
+```
+docker-compose stop
+```
 
-To remove containers:
+Remove Containers:
+```
+docker-compose kill
+```
 
-- `docker-compose kill`
+Create Database Migration:
+```
+docker-compose run --rm flask_app flask db migrate -m "<message here>"
+```
 
-
-To migrate db:
-
-- `docker-compose run --rm flask_app flask db migrate -m "<message here>"`
-
-
-To upgrade db:
-
-- `docker-compose run cargo flask_app flask db upgrade`
-
+Upgrade Database:
+```
+docker-compose run --rm flask_app flask db upgrade
+```
 
 To attach to running instance:
-
-- `docker-compose exec <container> /bin/bash`
+```
+docker-compose exec <container> /bin/bash
+```
